@@ -180,8 +180,9 @@ excluded_name (char const *name, struct tar_stat_info *st)
 	  if (result & EXCLUDED_MATCHED)
 	    goto end;
 
-	  if (ep->prefix_len && strlen (name) > ep->prefix_len &&
-	      memcmp (name, ep->prefix, ep->prefix_len) == 0)
+	  if (ep->prefix_len
+	      && ep->prefix_len < strnlen (name, ep->prefix_len + 1)
+	      && memcmp (name, ep->prefix, ep->prefix_len) == 0)
 	    rname = name + ep->prefix_len;
 	  else
 	    rname = name + dotslashlen (name);

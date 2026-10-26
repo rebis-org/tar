@@ -1534,7 +1534,8 @@ try_new_volume (void)
       if (!streq (continued_file_name, bufmap_head->file_name))
         {
           if ((archive_format == GNU_FORMAT || archive_format == OLDGNU_FORMAT)
-              && strlen (bufmap_head->file_name) >= NAME_FIELD_SIZE
+              && (strnlen (bufmap_head->file_name, NAME_FIELD_SIZE)
+		  == NAME_FIELD_SIZE)
               && strncmp (continued_file_name, bufmap_head->file_name,
                           NAME_FIELD_SIZE) == 0)
 	    paxwarn (0,
@@ -1737,7 +1738,7 @@ gnu_add_multi_volume_header (struct bufmap *map)
 {
   int tmp;
   union block *block = find_next_block ();
-  idx_t len = strlen (map->file_name);
+  idx_t len = strnlen (map->file_name, NAME_FIELD_SIZE + 1);
 
   if (len > NAME_FIELD_SIZE)
     {

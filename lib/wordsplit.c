@@ -1020,7 +1020,7 @@ wordsplit_find_env (struct wordsplit *wsp, char const *name, idx_t len,
       /* A key-value pair environment */
       for (i = 0; wsp->ws_env[i]; i++)
 	{
-	  idx_t elen = strlen (wsp->ws_env[i]);
+	  idx_t elen = strnlen (wsp->ws_env[i], len + 1);
 	  if (elen == len && memeq (wsp->ws_env[i], name, elen))
 	    {
 	      *ret = wsp->ws_env[i + 1];

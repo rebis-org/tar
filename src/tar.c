@@ -2563,7 +2563,8 @@ decode_options (int argc, char **argv)
 		   + INT_STRLEN_BOUND (int) /* for volume number */
 		   - 1 /* for sign, as 0 <= volno */)
 		: 0));
-	  if (volume_label_max_len < strlen (volume_label_option))
+	  if (volume_label_max_len
+	      < strnlen (volume_label_option, volume_label_max_len + 1))
 	    paxusage (_("%s: Volume label length exceeds %d bytes"),
 		      quotearg_colon (volume_label_option),
 		      volume_label_max_len);

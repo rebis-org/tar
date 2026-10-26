@@ -1185,7 +1185,8 @@ pax_dump_header_1 (struct tar_sparse_file *file)
   file->stat_info->file_name =
     xheader_format_name (file->stat_info, "%d/GNUSparseFile.0/%f", 0);
   /* Make sure the created header name is shorter than NAME_FIELD_SIZE: */
-  if (strlen (file->stat_info->file_name) > NAME_FIELD_SIZE)
+  if (NAME_FIELD_SIZE
+      < strnlen (file->stat_info->file_name, NAME_FIELD_SIZE + 1))
     file->stat_info->file_name[NAME_FIELD_SIZE] = 0;
 
   struct block_ptr bp;

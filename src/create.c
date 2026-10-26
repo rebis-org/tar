@@ -571,13 +571,13 @@ split_long_name (const char *name, idx_t length)
 static union block *
 write_ustar_long_name (const char *name)
 {
-  idx_t length = strlen (name);
+  int maxlen = PREFIX_FIELD_SIZE + NAME_FIELD_SIZE + 1;
+  idx_t length = strnlen (name, maxlen + 1);
 
-  if (length > PREFIX_FIELD_SIZE + NAME_FIELD_SIZE + 1)
+  if (maxlen < length)
     {
       paxerror (0, _("%s: file name is too long (max %d); not dumped"),
-		quotearg_colon (name),
-		PREFIX_FIELD_SIZE + NAME_FIELD_SIZE + 1);
+		quotearg_colon (name), maxlen);
       return NULL;
     }
 
@@ -635,7 +635,7 @@ write_long_name (struct tar_stat_info *st)
       break;
 
     case V7_FORMAT:
-      if (strlen (st->file_name) > NAME_FIELD_SIZE-1)
+      if (NAME_FIELD_SIZE <= strnlen (st->file_name, NAME_FIELD_SIZE))
 	{
 	  paxerror (0, _("%s: file name is too long (max %d); not dumped"),
 		    quotearg_colon (st->file_name), NAME_FIELD_SIZE - 1);
@@ -698,11 +698,14 @@ write_header_name (struct tar_stat_info *st)
       xheader_store ("path", st, NULL);
       return write_short_name (st);
     }
-  else if (NAME_FIELD_SIZE - (archive_format == OLDGNU_FORMAT)
-	   < strlen (st->file_name))
-    return write_long_name (st);
   else
-    return write_short_name (st);
+    {
+      int maxlen = NAME_FIELD_SIZE - (archive_format == OLDGNU_FORMAT);
+      return ((strnlen (st->file_name, maxlen + 1) <= maxlen
+	       ? write_short_name
+	       : write_long_name)
+	      (st));
+    }
 }
 
 
@@ -918,13 +921,13 @@ start_header (struct tar_stat_info *st)
 	gid_to_gname (st->stat.st_gid, &st->gname);
 
       if (archive_format == POSIX_FORMAT
-	  && (strlen (st->uname) > UNAME_FIELD_SIZE
+	  && (UNAME_FIELD_SIZE < strnlen (st->uname, UNAME_FIELD_SIZE + 1)
 	      || !string_ascii_p (st->uname)))
 	xheader_store ("uname", st, NULL);
       UNAME_TO_CHARS (st->uname, header->header.uname);
 
       if (archive_format == POSIX_FORMAT
-	  && (strlen (st->gname) > GNAME_FIELD_SIZE
+	  && (GNAME_FIELD_SIZE < strnlen (st->gname, GNAME_FIELD_SIZE + 1)
 	      || !string_ascii_p (st->gname)))
 	xheader_store ("gname", st, NULL);
       GNAME_TO_CHARS (st->gname, header->header.gname);
@@ -1443,8 +1446,8 @@ dump_hard_link (struct tar_stat_info *st)
 
 	  block_ordinal = current_block_ordinal ();
 	  assign_string (&st->link_name, link_name);
-	  if (NAME_FIELD_SIZE - (archive_format == OLDGNU_FORMAT)
-	      < strlen (link_name))
+	  int maxlen = NAME_FIELD_SIZE - (archive_format == OLDGNU_FORMAT);
+	  if (maxlen < strnlen (link_name, maxlen + 1))
 	    write_long_link (st);
 
 	  st->stat.st_size = 0;
@@ -1857,8 +1860,8 @@ dump_file0 (struct tar_stat_info *st, char const *name, char const *p)
 	}
       if (!transform_name (&st->link_name, XFORM_SYMLINK))
 	return allocated;
-      if (NAME_FIELD_SIZE - (archive_format == OLDGNU_FORMAT)
-	  < strlen (st->link_name))
+      int maxlen = NAME_FIELD_SIZE - (archive_format == OLDGNU_FORMAT);
+      if (maxlen < strnlen (st->link_name, maxlen + 1))
 	write_long_link (st);
 
       xattrs_selinux_get (f.fd, f.base, st, 0);
