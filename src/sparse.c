@@ -1014,7 +1014,8 @@ static struct tar_sparse_optab const star_optab = {
                         GNU.sparse.size variable)
 
    The name field of the ustar header is constructed using the pattern
-   "%d/GNUSparseFile.%p/%f".
+   "%d/GNUSparseFile.0/%f".  Although the pattern formerly used "%p"
+   instead of "0", the "%p" hurt reproducibility.
 
    The sparse map itself is stored in the file data block, preceding the actual
    file data. It consists of a series of octal numbers of arbitrary length,
@@ -1082,8 +1083,8 @@ pax_dump_header_0 (struct tar_sparse_file *file)
     {
       xheader_store ("GNU.sparse.name", file->stat_info, NULL);
       save_file_name = file->stat_info->file_name;
-      file->stat_info->file_name = xheader_format_name (file->stat_info,
-					       "%d/GNUSparseFile.%p/%f", 0);
+      file->stat_info->file_name
+	= xheader_format_name (file->stat_info, "%d/GNUSparseFile.0/%f", 0);
 
       xheader_string_begin (&file->stat_info->xhdr);
       for (idx_t i = 0; i < file->stat_info->sparse_map_avail; i++)
@@ -1182,7 +1183,7 @@ pax_dump_header_1 (struct tar_sparse_file *file)
   xheader_store ("GNU.sparse.realsize", file->stat_info, NULL);
 
   file->stat_info->file_name =
-    xheader_format_name (file->stat_info, "%d/GNUSparseFile.%p/%f", 0);
+    xheader_format_name (file->stat_info, "%d/GNUSparseFile.0/%f", 0);
   /* Make sure the created header name is shorter than NAME_FIELD_SIZE: */
   if (strlen (file->stat_info->file_name) > NAME_FIELD_SIZE)
     file->stat_info->file_name[NAME_FIELD_SIZE] = 0;

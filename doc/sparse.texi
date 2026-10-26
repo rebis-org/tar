@@ -167,7 +167,7 @@ To address the 2nd problem, the @code{name} field in @code{ustar}
 is replaced with a special name, constructed using the following pattern:
 
 @smallexample
-%d/GNUSparseFile.%p/%f
+%d/GNUSparseFile.0/%f
 @end smallexample
 
 @vrindex GNU.sparse.name, extended header variable
@@ -208,7 +208,7 @@ The @code{name} field in @code{ustar} header contains a special name,
 constructed using the following pattern:
 
 @smallexample
-%d/GNUSparseFile.%p/%f
+%d/GNUSparseFile.0/%f
 @end smallexample
 
 @vrindex GNU.sparse.name, extended header variable, in v.1.0

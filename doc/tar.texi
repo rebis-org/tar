@@ -11115,10 +11115,7 @@ version 1.0}@footnote{@xref{PAX 1}.}, which are the easiest to expand.
 The condensed file will contain both file map and file data, so no
 additional data will be needed to restore it.  If the original file
 name was @file{@var{dir}/@var{name}}, then the condensed file will be
-named @file{@var{dir}/@/GNUSparseFile.@var{n}/@/@var{name}}, where
-@var{n} is a decimal number@footnote{Technically speaking, @var{n} is a
-@dfn{process @acronym{ID}} of the @command{tar} process which created the
-archive (@pxref{PAX keywords}).}.
+named @file{@var{dir}/@/GNUSparseFile.0/@/@var{name}}.
 
 To expand a version 1.0 file, run @command{xsparse} as follows:
 
@@ -11155,9 +11152,9 @@ run mode is enabled by @option{-n} command line argument:
 
 @smallexample
 @group
-$ @kbd{xsparse -n /home/gray/GNUSparseFile.6058/sparsefile}
+$ @kbd{xsparse -n /home/gray/GNUSparseFile.0/sparsefile}
 Reading v.1.0 sparse map
-Expanding file '/home/gray/GNUSparseFile.6058/sparsefile' to
+Expanding file '/home/gray/GNUSparseFile.0/sparsefile' to
 '/home/gray/sparsefile'
 Finished dry run
 @end group
@@ -11166,7 +11163,7 @@ Finished dry run
 To actually expand the file, you would run:
 
 @smallexample
-$ @kbd{xsparse /home/gray/GNUSparseFile.6058/sparsefile}
+$ @kbd{xsparse /home/gray/GNUSparseFile.0/sparsefile}
 @end smallexample
 
 @noindent
@@ -11177,9 +11174,9 @@ similar to that from the dry run mode, use @option{-v} option:
 
 @smallexample
 @group
-$ @kbd{xsparse -v /home/gray/GNUSparseFile.6058/sparsefile}
+$ @kbd{xsparse -v /home/gray/GNUSparseFile.0/sparsefile}
 Reading v.1.0 sparse map
-Expanding file '/home/gray/GNUSparseFile.6058/sparsefile' to
+Expanding file '/home/gray/GNUSparseFile.0/sparsefile' to
 '/home/gray/sparsefile'
 Done
 @end group
@@ -11194,14 +11191,14 @@ use.  Continuing our example:
 @smallexample
 @group
 $ @kbd{xsparse -v -x /home/gray/PaxHeaders/sparsefile \
-  /home/gray/GNUSparseFile/sparsefile}
+  /home/gray/GNUSparseFile.0/sparsefile}
 Reading extended header file
 Found variable GNU.sparse.major = 1
 Found variable GNU.sparse.minor = 0
 Found variable GNU.sparse.name = sparsefile
 Found variable GNU.sparse.realsize = 217481216
 Reading v.1.0 sparse map
-Expanding file '/home/gray/GNUSparseFile.6058/sparsefile' to
+Expanding file '/home/gray/GNUSparseFile.0/sparsefile' to
 '/home/gray/sparsefile'
 Done
 @end group
@@ -11251,8 +11248,8 @@ star: Unknown extended header keyword 'GNU.sparse.size' ignored.
 star: Unknown extended header keyword 'GNU.sparse.numblocks' ignored.
 star: Unknown extended header keyword 'GNU.sparse.name' ignored.
 star: Unknown extended header keyword 'GNU.sparse.map' ignored.
-block        56:  425984 -rw-r--r--  gray/users Jun 25 14:46 2006 GNUSparseFile.28124/sparsefile
-block       897:   65391 -rw-r--r--  gray/users Jun 24 20:06 2006 README
+block        56:  425984 -rw-r--r--  gray/users Oct 25 14:46 2026 GNUSparseFile.0/sparsefile
+block       897:   65391 -rw-r--r--  gray/users Oct 24 20:06 2026 README
 @dots{}
 @end group
 @end smallexample
@@ -11297,13 +11294,13 @@ Finally, you can expand the condensed file, using the obtained header:
 
 @smallexample
 @group
-$ @kbd{xsparse -v -x xhdr GNUSparseFile.6058/sparsefile}
+$ @kbd{xsparse -v -x xhdr GNUSparseFile.0/sparsefile}
 Reading extended header file
 Found variable GNU.sparse.size = 217481216
 Found variable GNU.sparse.numblocks = 208
 Found variable GNU.sparse.name = sparsefile
 Found variable GNU.sparse.map = 0,2048,1050624,2048,@dots{}
-Expanding file 'GNUSparseFile.28124/sparsefile' to 'sparsefile'
+Expanding file 'GNUSparseFile.0/sparsefile' to 'sparsefile'
 Done
 @end group
 @end smallexample
